@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Avoid dependency hell in Python with venv and pip freeze</title><!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v3.9.1" />
+<meta property="og:title" content="Avoid dependency hell in Python with venv and pip freeze" />
+<meta name="author" content="Daniel" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="As a developer in the mid-2000s, dependency management was one of the more challenging aspects of my role at a national media company. One example that comes to mind was the almost literal pain involved in deploying a DLL update to our sprawling .NET web application across a web farm1 of three Microsoft IIS servers. The update process was simple but achingly manual: take each server in turn, manually drag and drop the new DLL into the server’s Global Assembly Cache (GAC) folder, and then add a reference to the version number of the DLL in the server’s machine.config. Even when diligently following these steps, a catastrophic “Server Error in ‘/’ Application” would sometimes occur, bringing the whole web application crashing down followed by panicked calls from our editorial teams. Server Error in &#39;/&#39; Application, once a .NET developer&#39;s blue screen of death. If we were lucky, depending on how many servers had been patched at that point, the web application would stay up every other page refresh or so. Not an ideal customer experience, even for circa 2005. The underlying cause was invariably due to an errant reference to an older version of the DLL in a web.config squirreled away in some folder within the web application. It was commonly referred to as DLL hell. Fast forward twenty years and I was reminded of these past woes when trying to get some old Python code up and running on a new laptop. Not for my actual job these days, just for fun. On running the code, Python complained about umpteen missing packages from NumPy to Beautiful Soup. Dependency hell. Now while it’s easy enough to install them manually using pip, you need to know the exact name and ideally the version. pip install beautifulsoup ERROR: Could not find a version that satisfies the requirement beautifulsoup ERROR: No matching distribution found for beautifulsoup Huh? Oh.. it’s actually called beautifulsoup4. Got it. Ahh, the latest version has broken my code. Sigh. Seem familiar? Fortunately, there is a better way to handle this scenario, and it involves virtual environments, pip freeze and a file called requirements.txt. Virtual environments. It’s good practice to create and activate a virtual environment in your working folder as soon as you start a new project. The venv module provides a way to do this. Here’s what its docs say: The venv module provides support for creating lightweight “virtual environments” with their own site directories, optionally isolated from system site directories. Each virtual environment has its own Python binary (which matches the version of the binary that was used to create this environment) and can have its own independent set of installed Python packages in its site directories. It’s simple to create a virtual environment: python -m venv venv .\venv\Scripts\activate …although the activate command is platform-specific so check the docs for the correct syntax. Now, with a virtual environment in place for your project, the interpreter can see only the packages you’ve installed in that specific environment. You can see exactly which ones by running pip freeze: pip freeze beautifulsoup4==4.10.0 certifi==2021.5.30 charset-normalizer==2.0.5 idna==3.2 requests==2.26.0 soupsieve==2.2.1 urllib3==1.26.6 From there, simply feed the output from pip freeze into a file called requirements.txt. pip freeze &gt; requirements.txt This creates a definitive record of your project’s required packages and version numbers - in the form of requirements.txt - which you and others can use to install those dependencies in future within a fresh environment. Here’s the install command: pip install -r requirements.txt Had I followed these steps way back at the start of this particular Python project that was causing me grief, I could have used the requirements.txt to get up and running in no time. Of course, the specific install command above can be useful in other places too. If you happen to build Docker images, you can use it within your Dockerfile. In summary… using virtual environments, pip freeze and requirements.txt provides a neat way to manage Python packages. Their use certainly helps me avoid dependency hell, and I hope they help you too. Wow, I haven’t used the expression “web farm” for years. Equivalent AWS-speak is more like “target group”. &#8617;" />
+<meta property="og:description" content="As a developer in the mid-2000s, dependency management was one of the more challenging aspects of my role at a national media company. One example that comes to mind was the almost literal pain involved in deploying a DLL update to our sprawling .NET web application across a web farm1 of three Microsoft IIS servers. The update process was simple but achingly manual: take each server in turn, manually drag and drop the new DLL into the server’s Global Assembly Cache (GAC) folder, and then add a reference to the version number of the DLL in the server’s machine.config. Even when diligently following these steps, a catastrophic “Server Error in ‘/’ Application” would sometimes occur, bringing the whole web application crashing down followed by panicked calls from our editorial teams. Server Error in &#39;/&#39; Application, once a .NET developer&#39;s blue screen of death. If we were lucky, depending on how many servers had been patched at that point, the web application would stay up every other page refresh or so. Not an ideal customer experience, even for circa 2005. The underlying cause was invariably due to an errant reference to an older version of the DLL in a web.config squirreled away in some folder within the web application. It was commonly referred to as DLL hell. Fast forward twenty years and I was reminded of these past woes when trying to get some old Python code up and running on a new laptop. Not for my actual job these days, just for fun. On running the code, Python complained about umpteen missing packages from NumPy to Beautiful Soup. Dependency hell. Now while it’s easy enough to install them manually using pip, you need to know the exact name and ideally the version. pip install beautifulsoup ERROR: Could not find a version that satisfies the requirement beautifulsoup ERROR: No matching distribution found for beautifulsoup Huh? Oh.. it’s actually called beautifulsoup4. Got it. Ahh, the latest version has broken my code. Sigh. Seem familiar? Fortunately, there is a better way to handle this scenario, and it involves virtual environments, pip freeze and a file called requirements.txt. Virtual environments. It’s good practice to create and activate a virtual environment in your working folder as soon as you start a new project. The venv module provides a way to do this. Here’s what its docs say: The venv module provides support for creating lightweight “virtual environments” with their own site directories, optionally isolated from system site directories. Each virtual environment has its own Python binary (which matches the version of the binary that was used to create this environment) and can have its own independent set of installed Python packages in its site directories. It’s simple to create a virtual environment: python -m venv venv .\venv\Scripts\activate …although the activate command is platform-specific so check the docs for the correct syntax. Now, with a virtual environment in place for your project, the interpreter can see only the packages you’ve installed in that specific environment. You can see exactly which ones by running pip freeze: pip freeze beautifulsoup4==4.10.0 certifi==2021.5.30 charset-normalizer==2.0.5 idna==3.2 requests==2.26.0 soupsieve==2.2.1 urllib3==1.26.6 From there, simply feed the output from pip freeze into a file called requirements.txt. pip freeze &gt; requirements.txt This creates a definitive record of your project’s required packages and version numbers - in the form of requirements.txt - which you and others can use to install those dependencies in future within a fresh environment. Here’s the install command: pip install -r requirements.txt Had I followed these steps way back at the start of this particular Python project that was causing me grief, I could have used the requirements.txt to get up and running in no time. Of course, the specific install command above can be useful in other places too. If you happen to build Docker images, you can use it within your Dockerfile. In summary… using virtual environments, pip freeze and requirements.txt provides a neat way to manage Python packages. Their use certainly helps me avoid dependency hell, and I hope they help you too. Wow, I haven’t used the expression “web farm” for years. Equivalent AWS-speak is more like “target group”. &#8617;" />
+<link rel="canonical" href="https://exactful.github.io/avoid-dependency-hell.html" />
+<meta property="og:url" content="https://exactful.github.io/avoid-dependency-hell.html" />
+<meta property="og:site_name" content="Exactful" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-09-14T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Avoid dependency hell in Python with venv and pip freeze" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://exactful.github.io/avoid-dependency-hell.html"},"datePublished":"2021-09-14T00:00:00+01:00","url":"https://exactful.github.io/avoid-dependency-hell.html","author":{"@type":"Person","name":"Daniel"},"description":"As a developer in the mid-2000s, dependency management was one of the more challenging aspects of my role at a national media company. One example that comes to mind was the almost literal pain involved in deploying a DLL update to our sprawling .NET web application across a web farm1 of three Microsoft IIS servers. The update process was simple but achingly manual: take each server in turn, manually drag and drop the new DLL into the server’s Global Assembly Cache (GAC) folder, and then add a reference to the version number of the DLL in the server’s machine.config. Even when diligently following these steps, a catastrophic “Server Error in ‘/’ Application” would sometimes occur, bringing the whole web application crashing down followed by panicked calls from our editorial teams. Server Error in &#39;/&#39; Application, once a .NET developer&#39;s blue screen of death. If we were lucky, depending on how many servers had been patched at that point, the web application would stay up every other page refresh or so. Not an ideal customer experience, even for circa 2005. The underlying cause was invariably due to an errant reference to an older version of the DLL in a web.config squirreled away in some folder within the web application. It was commonly referred to as DLL hell. Fast forward twenty years and I was reminded of these past woes when trying to get some old Python code up and running on a new laptop. Not for my actual job these days, just for fun. On running the code, Python complained about umpteen missing packages from NumPy to Beautiful Soup. Dependency hell. Now while it’s easy enough to install them manually using pip, you need to know the exact name and ideally the version. pip install beautifulsoup ERROR: Could not find a version that satisfies the requirement beautifulsoup ERROR: No matching distribution found for beautifulsoup Huh? Oh.. it’s actually called beautifulsoup4. Got it. Ahh, the latest version has broken my code. Sigh. Seem familiar? Fortunately, there is a better way to handle this scenario, and it involves virtual environments, pip freeze and a file called requirements.txt. Virtual environments. It’s good practice to create and activate a virtual environment in your working folder as soon as you start a new project. The venv module provides a way to do this. Here’s what its docs say: The venv module provides support for creating lightweight “virtual environments” with their own site directories, optionally isolated from system site directories. Each virtual environment has its own Python binary (which matches the version of the binary that was used to create this environment) and can have its own independent set of installed Python packages in its site directories. It’s simple to create a virtual environment: python -m venv venv .\\venv\\Scripts\\activate …although the activate command is platform-specific so check the docs for the correct syntax. Now, with a virtual environment in place for your project, the interpreter can see only the packages you’ve installed in that specific environment. You can see exactly which ones by running pip freeze: pip freeze beautifulsoup4==4.10.0 certifi==2021.5.30 charset-normalizer==2.0.5 idna==3.2 requests==2.26.0 soupsieve==2.2.1 urllib3==1.26.6 From there, simply feed the output from pip freeze into a file called requirements.txt. pip freeze &gt; requirements.txt This creates a definitive record of your project’s required packages and version numbers - in the form of requirements.txt - which you and others can use to install those dependencies in future within a fresh environment. Here’s the install command: pip install -r requirements.txt Had I followed these steps way back at the start of this particular Python project that was causing me grief, I could have used the requirements.txt to get up and running in no time. Of course, the specific install command above can be useful in other places too. If you happen to build Docker images, you can use it within your Dockerfile. In summary… using virtual environments, pip freeze and requirements.txt provides a neat way to manage Python packages. Their use certainly helps me avoid dependency hell, and I hope they help you too. Wow, I haven’t used the expression “web farm” for years. Equivalent AWS-speak is more like “target group”. &#8617;","headline":"Avoid dependency hell in Python with venv and pip freeze","dateModified":"2021-09-14T00:00:00+01:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link type="application/atom+xml" rel="alternate" href="https://exactful.github.io/feed.xml" title="Exactful" /><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+</head><body a="auto">
+    <main class="page-content" aria-label="Content">
+      <div class="w">
+        <a href="/">..</a><article>
+  <p class="post-meta">
+    <time datetime="2021-09-14 00:00:00 +0100">2021-09-14</time>
+  </p>
+  
+  <h1>Avoid dependency hell in Python with venv and pip freeze</h1>
+
+  <p>As a developer in the mid-2000s, dependency management was one of the more challenging aspects of my role at a national media company.</p>
+
+<p>One example that comes to mind was the almost literal pain involved in deploying a DLL update to our sprawling .NET web application across a web farm<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup> of three Microsoft IIS servers.</p>
+
+<p>The update process was simple but achingly manual: take each server in turn, manually drag and drop the new DLL into the server’s Global Assembly Cache (GAC) folder, and then add a reference to the version number of the DLL in the server’s machine.config.</p>
+
+<p>Even when diligently following these steps, a catastrophic “Server Error in ‘/’ Application” would sometimes occur, bringing the whole web application crashing down followed by panicked calls from our editorial teams.</p>
+
+<figure>
+  <img src="/assets/images/blog/server-error.png" alt="Server error" />
+  <figcaption>Server Error in '/' Application, once a .NET developer's blue screen of death.</figcaption>
+</figure>
+
+<p>If we were lucky, depending on how many servers had been patched at that point, the web application would stay up every other page refresh or so.  Not an ideal customer experience, even for circa 2005.</p>
+
+<p>The underlying cause was invariably due to an errant reference to an older version of the DLL in a web.config squirreled away in some folder within the web application.  It was commonly referred to as DLL hell.</p>
+
+<p>Fast forward twenty years and I was reminded of these past woes when trying to get some old Python code up and running on a new laptop.  Not for my actual job these days, just for fun.</p>
+
+<p>On running the code, Python complained about umpteen missing packages from NumPy to Beautiful Soup.  Dependency hell.  Now while it’s easy enough to install them manually using pip, you need to know the exact name and ideally the version.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pip</span> <span class="n">install</span> <span class="n">beautifulsoup</span>
+
+<span class="n">ERROR</span><span class="p">:</span> <span class="n">Could</span> <span class="ow">not</span> <span class="n">find</span> <span class="n">a</span> <span class="n">version</span> <span class="n">that</span> <span class="n">satisfies</span> <span class="n">the</span> <span class="n">requirement</span> <span class="n">beautifulsoup</span>
+<span class="n">ERROR</span><span class="p">:</span> <span class="n">No</span> <span class="n">matching</span> <span class="n">distribution</span> <span class="n">found</span> <span class="k">for</span> <span class="n">beautifulsoup</span>
+</code></pre></div></div>
+
+<p>Huh?  Oh.. it’s actually called beautifulsoup4. Got it.  Ahh, the latest version has broken my code.  Sigh.  Seem familiar?</p>
+
+<p>Fortunately, there is a better way to handle this scenario, and it involves virtual environments, pip freeze and a file called requirements.txt.</p>
+
+<p>Virtual environments.  It’s good practice to create and activate a virtual environment in your working folder as soon as you start a new project.</p>
+
+<p>The venv module provides a way to do this.  Here’s what its <a href="https://docs.python.org/3/library/venv.html">docs</a> say:</p>
+
+<blockquote>
+  <p>The venv module provides support for creating lightweight “virtual environments” with their own site directories, optionally isolated from system site directories. Each virtual environment has its own Python binary (which matches the version of the binary that was used to create this environment) and can have its own independent set of installed Python packages in its site directories.</p>
+</blockquote>
+
+<p>It’s simple to create a virtual environment:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">venv</span>
+<span class="p">.</span>\<span class="n">venv</span>\<span class="n">Scripts</span>\<span class="n">activate</span>
+</code></pre></div></div>
+
+<p>…although the activate command is platform-specific so check the <a href="https://docs.python.org/3/library/venv.html">docs</a> for the correct syntax.</p>
+
+<p>Now, with a virtual environment in place for your project, the interpreter can see only the packages you’ve installed in that specific environment.  You can see exactly which ones by running pip freeze:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pip</span> <span class="n">freeze</span>
+
+<span class="n">beautifulsoup4</span><span class="o">==</span><span class="mf">4.10</span><span class="p">.</span><span class="mi">0</span>
+<span class="n">certifi</span><span class="o">==</span><span class="mf">2021.5</span><span class="p">.</span><span class="mi">30</span>
+<span class="n">charset</span><span class="o">-</span><span class="n">normalizer</span><span class="o">==</span><span class="mf">2.0</span><span class="p">.</span><span class="mi">5</span>
+<span class="n">idna</span><span class="o">==</span><span class="mf">3.2</span>
+<span class="n">requests</span><span class="o">==</span><span class="mf">2.26</span><span class="p">.</span><span class="mi">0</span>
+<span class="n">soupsieve</span><span class="o">==</span><span class="mf">2.2</span><span class="p">.</span><span class="mi">1</span>
+<span class="n">urllib3</span><span class="o">==</span><span class="mf">1.26</span><span class="p">.</span><span class="mi">6</span>
+</code></pre></div></div>
+
+<p>From there, simply feed the output from pip freeze into a file called requirements.txt.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pip</span> <span class="n">freeze</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+</code></pre></div></div>
+
+<p>This creates a definitive record of your project’s required packages and version numbers - in the form of requirements.txt - which you and others can use to install those dependencies in future within a fresh environment.  Here’s the install command:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+</code></pre></div></div>
+
+<p>Had I followed these steps way back at the start of this particular Python project that was causing me grief, I could have used the requirements.txt to get up and running in no time.</p>
+
+<p>Of course, the specific install command above can be useful in other places too.  If you happen to build Docker images, you can use it within your Dockerfile.</p>
+
+<p>In summary… using virtual environments, pip freeze and requirements.txt provides a neat way to manage Python packages.  Their use certainly helps me avoid dependency hell, and I hope they help you too.</p>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>Wow, I haven’t used the expression “web farm” for years.  Equivalent AWS-speak is more like “target group”. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+</article>
+      </div>
+    </main>
+  </body>
+</html>
