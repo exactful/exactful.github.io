@@ -1,7 +1,8 @@
 ---
-layout:	post
-title:	Getting started with Docker in 6 minutes
+layout: post
+title: Getting started with Docker in 6 minutes
 category: docker
+comments: true
 ---
 
 This post covers the commands that I found most useful when starting to learn [Docker](https://www.docker.com/get-started) from installation to managing images and containers.

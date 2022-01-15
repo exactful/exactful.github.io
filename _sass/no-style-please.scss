@@ -59,7 +59,10 @@ hr {
   &:after { content: attr(data-content) '/////' }
 }
 
-table { width: 100%; }
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
 
 table, th, td {
   border: thin solid black;

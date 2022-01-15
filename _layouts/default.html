@@ -12,10 +12,8 @@
       {%-include goat_counter.html-%}
     {%-endif-%}
 
-    {% if page.custom_js %}
-      {% for js_file in page.custom_js %}
-        <script type="text/javascript" src="{{ site.baseurl }}/assets/js/{{ js_file }}.js"></script>
-      {% endfor %}
+    {% if page.math == true %}
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
     {% endif %}
   </body>
 </html>

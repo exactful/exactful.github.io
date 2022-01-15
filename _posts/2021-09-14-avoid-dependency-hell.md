@@ -1,7 +1,8 @@
 ---
-layout:     post
-title:      Avoid dependency hell in Python with venv and pip freeze
+layout: post
+title: Avoid dependency hell in Python with venv and pip freeze
 category: python
+comments: true
 ---
 
 As a developer in the mid-2000s, dependency management was one of the more challenging aspects of my role at a national media company.
